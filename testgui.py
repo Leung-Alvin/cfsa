@@ -13,7 +13,7 @@ root.geometry("1600x1200")
 root.title("CFSA Prototype")
 
 CyberFont = Font(
-    family = "D:\Documents\CS425_Demo\Fonts",
+    family = "Verdana",
     size = 42,
     weight = "bold",
     slant = "roman",
