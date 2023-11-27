@@ -4,6 +4,7 @@ from tkinter.font import Font
 import prompt
 import random
 import model
+import numpy as np
 #function to be called when the button is clicked
 #def on_button_click():
     #messagebox.showinfo("Hello World")
@@ -43,8 +44,12 @@ def compare_with_database():
     prompts = prompt.get_prompts()
     pmt = tk.Label(frame, text=random.choice(prompts))
     pmt.pack()
-    def printInput(): 
-        lmao = model.predicto(inputtxt.get("1.0", "end-1c"))
+    def printInput():
+        text = inputtxt.get("1.0", "end-1c")
+        if text == "":
+            messagebox.showinfo("Error", "Please enter text in the box.")
+            return 
+        lmao = model.predicto(text)
         lbl.config(text = lmao) 
     # TextBox Creation 
     inputtxt = tk.Text(frame, 
@@ -103,24 +108,27 @@ def compare_two_prints():
 
     # Create the main window
     root = tk.Tk()
-    root.title("Two Text Inputs")
+    root.title("Compare Two Prints")
 
+    prompts = prompt.get_prompts()
+    text_1 = np.random.choice(prompts, replace = False)
+    text_2 = np.random.choice(prompts, replace = False)
     # Create the first text box
-    label1 = tk.Label(root, text="Print 1:")
-    label1.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+    label1 = tk.Label(root, text=text_1)
+    label1.grid(row=0, column=0, padx=100, pady=10, sticky="w")
 
     entry1 = tk.Text(root, height=20, width=100)
     entry1.grid(row=0, column=1, padx=10, pady=10)
 
     # Create the second text box
-    label2 = tk.Label(root, text="Print 2:")
-    label2.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+    label2 = tk.Label(root, text=text_2)
+    label2.grid(row=1, column=0, padx=100, pady=10, sticky="w")
 
     entry2 = tk.Text(root, height=20, width=100)
     entry2.grid(row=1, column=1, padx=10, pady=10)
 
     # Create the submission button
-    submit_button = tk.Button(root, text="Submit", command=submit)
+    submit_button = tk.Button(root, text="Predict", command=submit)
     submit_button.grid(row=2, column=0, columnspan=2, pady=10)
 
     root.mainloop()  # Start the Tkinter event loop
@@ -128,9 +136,10 @@ def compare_two_prints():
 # root.mainloop()     
 def main(): 
     # root.mainloop()
-    frame = tk.Tk() 
-    frame.title("CFSA Prototype") 
-    frame.geometry('1600x1200')
+    frame = tk.Tk()
+    frame.state('zoomed') 
+    frame.title("CFSA Prototype")
+    # frame.geometry('1600x1200')
     CyberFont = Font(
         family = "Verdana",
         size = 42,
@@ -140,19 +149,29 @@ def main():
     frame.configure(bg="lightblue")
     #CFSA Title Widget
     label = tk.Label(frame, text="CFSA Demo", font = CyberFont, bg="lightblue", pady=10)
-
-    label.place(x = 800, y = 300)  
+    label.grid(row=1, column=0, padx=100, pady=10, sticky="w") 
     # Button Creation
      
     db_compare_button = tk.Button(frame, 
                             text = "Compare With Database",  
-                            command = compare_with_database) 
-    db_compare_button.pack()
+                            command = compare_with_database)
+    db_compare_button.grid(row=1, column=1, columnspan=100, pady=10) 
+    # db_compare_button.pack()
     
     compare_two_prints_button = tk.Button(frame, 
                             text = "Compare Two Prints",  
-                            command = compare_two_prints) 
-    compare_two_prints_button.pack()  
+                            command = compare_two_prints)
+    compare_two_prints_button.grid(row=2, column=1, columnspan=100, pady=10)  
+    # compare_two_prints_button.pack()
+    
+    def quit():
+        frame.destroy()
+    
+    quit_button = tk.Button(frame, 
+                            text = "Quit Application",  
+                            command = quit)
+    quit_button.grid(row=3, column=1, columnspan=100, pady=10) 
+    # quit_button.pack()    
 
     frame.mainloop()
     
