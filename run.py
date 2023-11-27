@@ -3,7 +3,7 @@ import testgui
 import prompt
 
 def main():
-    model.main()
+    # model.clear_temp()
     testgui.main()
 
 if __name__ == '__main__':

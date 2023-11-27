@@ -1,6 +1,11 @@
 import stylom as st
 
-def main():
+import os
+
+# def clear_temp():
+#     open('survey/temp_-_mundanely.txt', 'w').close()
+
+def predicto(string):
     st.delete_train_test_dirs()
     src = "survey"
     dest_1 = "tr"
@@ -12,3 +17,4 @@ def main():
     db_name = "not_bad"
     dir_authors = st.get_all_authors(dest_1)
     dir_prints = st.get_prints(dir_authors, dest_1)
+    return st.predict_formatted(dir_prints, string, dir_authors, 45)
