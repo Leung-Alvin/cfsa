@@ -1,7 +1,5 @@
 import stylom as st
 
-import os
-
 # def clear_temp():
 #     open('survey/temp_-_mundanely.txt', 'w').close()
 

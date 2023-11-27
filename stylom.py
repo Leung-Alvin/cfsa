@@ -1,8 +1,3 @@
-from faststylometry import Corpus
-from faststylometry import load_corpus_from_folder
-from faststylometry import tokenise_remove_pronouns_en
-from faststylometry import calculate_burrows_delta
-from faststylometry import predict_proba, calibrate
 import nltk
 import os
 nltk.download("punkt")
@@ -11,9 +6,6 @@ import pickle
 from random import shuffle
 from math import floor
 import shutil
-import requests, zipfile
-import matplotlib.pyplot as plt
-import time
 import nltk
 
 def get_text_by_author(author, directory):

@@ -1,6 +1,3 @@
-import os
-
-
 def get_prompts():
     text = open('prompts.txt', 'r').read()
     return text.replace('"', '').replace("- ", '').split("\n")

@@ -1,6 +1,4 @@
-import model
 import testgui
-import prompt
 
 def main():
     # model.clear_temp()
