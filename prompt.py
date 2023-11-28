@@ -1,7 +1,6 @@
 def get_prompts():
-    text = open('prompts.txt', 'r').read()
+    text = open('cfsa\\prompts.txt', 'r').read()
     return text.replace('"', '').replace("- ", '').split("\n")
-    
 
 def main():
     prompts = get_prompts()
