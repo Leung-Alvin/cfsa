@@ -5,6 +5,7 @@ import prompt
 import random
 import model
 import numpy as np
+import grammar
 #function to be called when the button is clicked
 #def on_button_click():
     #messagebox.showinfo("Hello World")
@@ -46,11 +47,18 @@ def compare_with_database():
     pmt.pack()
     def printInput():
         text = inputtxt.get("1.0", "end-1c")
+        # print(text)
         if text == "":
             messagebox.showinfo("Error", "Please enter text in the box.")
             return 
-        lmao = model.predicto(text)
-        lbl.config(text = lmao)
+        else:
+            lmao = model.predicto(text,75)
+            string_1 = "My top 3 predictions given the top 75 words are: " + "\n" + str(list(lmao.keys())[:3])
+            lmao2 = model.predicto(text,45)
+            string_2 = "My top 3 predictions given the top 45 words are: " + "\n" + str(list(lmao2.keys())[:3])
+            lmao3 = grammar.grammar_analyis(text)
+            string_3 = "My top 3 predictions given the grammar analysis are: " + "\n" + str(lmao3)
+            lbl.config(text = string_1 + "\n" + string_2 + "\n" + string_3)
     
     def skipPrompt():
         pmt.config(text=np.random.choice(prompts, replace=False))
