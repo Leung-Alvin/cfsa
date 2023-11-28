@@ -56,9 +56,9 @@ def compare_with_database():
             string_1 = "My top 3 predictions given the top 75 words are: " + "\n" + str(list(lmao.keys())[:3])
             lmao2 = model.predicto(text,45)
             string_2 = "My top 3 predictions given the top 45 words are: " + "\n" + str(list(lmao2.keys())[:3])
-            lmao3 = grammar.grammar_analyis(text)
-            string_3 = "My top 3 predictions given the grammar analysis are: " + "\n" + str(lmao3)
-            lbl.config(text = string_1 + "\n" + string_2 + "\n" + string_3)
+            # lmao3 = grammar.grammar_analyis(text)
+            # string_3 = "My top 3 predictions given the grammar analysis are: " + "\n" + str(lmao3)
+            lbl.config(text = string_1 + "\n" + string_2)
     
     def skipPrompt():
         pmt.config(text=np.random.choice(prompts, replace=False))
@@ -108,8 +108,8 @@ def compare_two_prints():
         # with open('survey/temp_-_mundanely.txt', 'w') as f:
         #     f.write(str(value1))
         # prediction = model.predicto(value2)
-        prediction_1 = model.predicto(value1)
-        prediction_2 = model.predicto(value2)
+        prediction_1 = model.predicto(value1, 45)
+        prediction_2 = model.predicto(value2, 45)
         results_1 = prediction_1.split("\n")[1].replace("Candidates: ","").replace("[","").replace("]","").split(", ")[0].replace("'","")
         results_2 = prediction_2.split("\n")[1].replace("Candidates: ","").replace("[","").replace("]","").split(", ")[0].replace("'","")
         print(results_1, results_2)
