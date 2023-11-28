@@ -42,7 +42,7 @@ def compare_with_database():
     # from textbox and printing it  
     # at label widget 
     prompts = prompt.get_prompts()
-    pmt = tk.Label(frame, text=random.choice(prompts))
+    pmt = tk.Label(frame, text=np.random.choice(prompts, replace=False))
     pmt.pack()
     def printInput():
         text = inputtxt.get("1.0", "end-1c")
@@ -50,7 +50,11 @@ def compare_with_database():
             messagebox.showinfo("Error", "Please enter text in the box.")
             return 
         lmao = model.predicto(text)
-        lbl.config(text = lmao) 
+        lbl.config(text = lmao)
+    
+    def skipPrompt():
+        pmt.config(text=np.random.choice(prompts, replace=False))
+        inputtxt.delete("1.0", "end-1c") 
     # TextBox Creation 
     inputtxt = tk.Text(frame, 
                     height = 50, 
@@ -62,7 +66,12 @@ def compare_with_database():
     printButton = tk.Button(frame, 
                             text = "Predict",  
                             command = printInput) 
-    printButton.pack() 
+    printButton.pack()
+    
+    skipPromptButton = tk.Button(frame, 
+                            text = "Skip Prompt",  
+                            command = skipPrompt) 
+    skipPromptButton.pack()  
     
     # Label Creation 
     lbl = tk.Label(frame, text = "") 
