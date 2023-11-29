@@ -13,11 +13,9 @@ def remove_strings_with_substring(input_list, substring):
     return updated_list
 
 def get_databases():
-    dirs = [x[0] for x in os.walk('.')]
+    dirs = [x[0] for x in os.walk('databases')]
     ret = remove_strings_with_substring(dirs, '.git')
-    ret.remove('.')
-    ret.remove('.\\__pycache__')
-    ret.remove('.\\Fonts')
+    ret.remove('databases')
     new_ret = []
     for db in ret:
         new_ret.append(db.replace(".\\", ""))
@@ -40,7 +38,7 @@ def main():
         authors = get_authors(db)
         # prints = get_prints(db)
         # print(db, authors, prints)
-        print(db,authors)
+        print(db, authors)
 if __name__ == '__main__':
     main()
     
