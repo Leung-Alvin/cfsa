@@ -55,11 +55,13 @@ def compare_with_database(root_window):
         else:
             lmao = model.predicto(text,75)
             string_1 = "My top 3 predictions given the top 75 words are: " + "\n" + str(list(lmao.keys())[:3])
+            deltas_1 = "Top 75 Deltas: " + "\n" + str(list(lmao.values())[:3])
             lmao2 = model.predicto(text,45)
             string_2 = "My top 3 predictions given the top 45 words are: " + "\n" + str(list(lmao2.keys())[:3])
+            deltas_2 = "Top 45 Deltas: " + "\n" + str(list(lmao2.values())[:3])
             # lmao3 = grammar.grammar_analyis(text)
             # string_3 = "My top 3 predictions given the grammar analysis are: " + "\n" + str(lmao3)
-            lbl.config(text = string_1 + "\n" + string_2)
+            lbl.config(text = string_1 + "\n" + deltas_1 + "\n" + string_2 + "\n" + deltas_2)
     
     def skipPrompt():
         pmt.config(text=np.random.choice(prompts, replace=False))
@@ -87,6 +89,9 @@ def compare_with_database(root_window):
     lbl.pack() 
     frame1.mainloop()
 
+# def view_prints(root_window):
+    
+    
 
 def compare_two_prints(root_window):
     result = False
@@ -103,25 +108,33 @@ def compare_two_prints(root_window):
             messagebox.showinfo("Error", "Please enter text in both boxes.")
             return
         
-        minimum_length = min(len(value1), len(value2))
+        # minimum_length = min(len(value1), len(value2))
         
-        value1 = value1[:minimum_length]
-        value2 = value2[:minimum_length]
+        # value1 = value1[:minimum_length]
+        # value2 = value2[:minimum_length]
         # with open('survey/temp_-_mundanely.txt', 'w') as f:
         #     f.write(str(value1))
         # prediction = model.predicto(value2)
+        #str(list(lmao2.keys())[:3])
         prediction_1 = model.predicto(value1, 45)
         prediction_2 = model.predicto(value2, 45)
-        results_1 = prediction_1.split("\n")[1].replace("Candidates: ","").replace("[","").replace("]","").split(", ")[0].replace("'","")
-        results_2 = prediction_2.split("\n")[1].replace("Candidates: ","").replace("[","").replace("]","").split(", ")[0].replace("'","")
-        print(results_1, results_2)
-        if results_1 == results_2:
-            results = "The two prints are likely by the same author."
+        results_1 = list(prediction_1.keys())[:3]
+        results_2 = list(prediction_2.keys())[:3]
+        deltas_1 = str(list(prediction_1.values())[:3])
+        deltas_2 = str(list(prediction_2.values())[:3])
+        if results_1[0] == results_2[0]:
+            results = "The two prints are likely by the same author." + "\n\n" + "Author_1 Candidates: " + str(results_1) + "\n" + "Author_1 Deltas: " + deltas_1 + "\n\n" + "Author_2 Candidates: " + str(results_2) + "\n" + "Author_2 Deltas: " + deltas_2
+        elif results_1[0] == results_2[1] or results_1[1] == results_2[0]:
+            results = "The two prints are probably by the same author." + "\n\n" + "Author_1 Candidates: " + str(results_1) + "\n" + "Author_1 Deltas: " + deltas_1 + "\n\n" + "Author_2 Candidates: " + str(results_2) + "\n" + "Author_2 Deltas: " + deltas_2
+        elif results_1[1] == results_2[2] or results_1[2] == results_2[1]:
+            results = "The two prints are possibly or possibly not by the same author." + "\n\n" + "Author_1 Candidates: " + str(results_1) + "\n" + "Author_1 Deltas: " + deltas_1 + "\n\n" + "Author_2 Candidates: " + str(results_2) + "\n" + "Author_2 Deltas: " + deltas_2
+        elif results_1[2] == results_2[2]:
+            results = "The two prints are probably not by the same author" + "\n\n" + "Author_1 Candidates: " + str(results_1) + "\n" + "Author_1 Deltas: " + deltas_1 + "\n\n" + "Author_2 Candidates: " + str(results_2) + "\n" + "Author_2 Deltas: " + deltas_2
         else:
-            results = "The two prints are likely by different authors."
+            results = "The two prints are unlikely to be by the same author" + "\n\n" + "Author_1 Candidates: " + str(results_1) + "\n" + "Author_1 Deltas: " + deltas_1 + "\n\n" + "Author_2 Candidates: " + str(results_2) + "\n" + "Author_2 Deltas: " + deltas_2
         frame = tk.Tk() 
         frame.title("Two Print Results") 
-        frame.geometry('400x300')
+        frame.geometry('600x300')
         label = tk.Label(frame, text=results)
         label.pack()
 
@@ -221,6 +234,24 @@ def main():
     compare_two_prints_button.bind('<Enter>', lambda event, btn = compare_two_prints_button: on_enter(btn))
     compare_two_prints_button.bind('<Leave>', lambda event, btn = compare_two_prints_button: on_leave(btn))
 
+    view_prints_button = tk.Button(frame, 
+                            text = "View Fingerprints",  
+                            command = lambda: compare_two_prints(frame), font = CyberFontButton, width = 35, height = 5)
+    view_prints_button.place(relx = .61, rely = .6, anchor = "center")  
+    # compare_two_prints_button.pack()
+    
+    view_prints_button.bind('<Enter>', lambda event, btn = view_prints_button: on_enter(btn))
+    view_prints_button.bind('<Leave>', lambda event, btn = view_prints_button: on_leave(btn))
+
+    placeholder_button = tk.Button(frame, 
+                            text = "[Placeholder]",  
+                            command = lambda: compare_two_prints(frame), font = CyberFontButton, width = 35, height = 5)
+    placeholder_button.place(relx = .37, rely = .6, anchor = "center")  
+    # compare_two_prints_button.pack()
+    
+    placeholder_button.bind('<Enter>', lambda event, btn = placeholder_button: on_enter(btn))
+    placeholder_button.bind('<Leave>', lambda event, btn = placeholder_button: on_leave(btn))
+
     def quit():
         frame.destroy()
     
@@ -232,6 +263,8 @@ def main():
     quit_button.bind('<Enter>', lambda event, btn = quit_button: on_enter(btn))
     quit_button.bind('<Leave>', lambda event, btn = quit_button: on_leave(btn))
 
+    
+    
     # quit_button.pack()    
 
     frame.mainloop()
