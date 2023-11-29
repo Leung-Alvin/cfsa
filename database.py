@@ -137,7 +137,6 @@ def read_print(directory, print_name):
         return f.read()
 
 def main():
-    add_print()
 
     dbs = get_databases()
     for db in dbs:
