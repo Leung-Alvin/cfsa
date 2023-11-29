@@ -1,9 +1,10 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import simpledialog, messagebox
 from tkinter.font import Font
 import prompt
 import random
 import model
+from database import os, get_folders_in_directory, get_valid_input, add_print
 import numpy as np
 import grammar
 
@@ -92,6 +93,42 @@ def compare_with_database(root_window):
 # def view_prints(root_window):
     
     
+def edit_database(root_window):
+    base_directory = "databases"
+
+    def show_message(title, message, icon):
+        messagebox.showinfo(title, message, icon=icon)
+
+    def get_print_input():
+        folders = get_folders_in_directory(base_directory)
+
+        if not folders:
+            show_message("No Folders", "No subdirectories found in the base directory.", tk.messagebox.WARNING)
+            return
+
+        subdirectory_prompt = "Select a subdirectory to add a print:\n" + "\n".join([f"{i}. {subdirectory}" for i, subdirectory in enumerate(folders, 1)])
+        selected_subdirectory_index = get_valid_input(subdirectory_prompt, 1, len(folders))
+        selected_subdirectory = os.path.join(base_directory, folders[selected_subdirectory_index - 1])
+
+        new_file_name = simpledialog.askstring("Add Print", "Enter the name of the new print:")
+        new_content = simpledialog.askstring("Add Print", "Enter the content for the new print (Press Enter if none):")
+
+        if new_file_name is not None:
+            new_file_path = os.path.join(selected_subdirectory, new_file_name)
+
+        with open(new_file_path, 'w') as new_file:
+            new_file.write(new_content)
+
+        show_message("Operation Complete", f"File '{new_file_name}' added to '{selected_subdirectory}'.", tk.messagebox.INFO)
+
+    db = tk.Toplevel(root_window)
+    db.title("Database")
+    db.geometry("800x700")
+
+    add_print_button = tk.Button(db, text="Add Print", command=get_print_input)
+    add_print_button.grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
+
+
 
 def compare_two_prints(root_window):
     result = False
@@ -244,8 +281,8 @@ def main():
     view_prints_button.bind('<Leave>', lambda event, btn = view_prints_button: on_leave(btn))
 
     placeholder_button = tk.Button(frame, 
-                            text = "[Placeholder]",  
-                            command = lambda: compare_two_prints(frame), font = CyberFontButton, width = 35, height = 5)
+                            text = "Database",  
+                            command = lambda: edit_database(frame), font = CyberFontButton, width = 35, height = 5)
     placeholder_button.place(relx = .37, rely = .6, anchor = "center")  
     # compare_two_prints_button.pack()
     

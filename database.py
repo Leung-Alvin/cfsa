@@ -1,7 +1,7 @@
 import os
 import shutil
 
-# helper directory operations
+# helper directory operations - CLI
 def get_folders_in_directory(directory_path):
     folders = [f for f in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, f))]
     return folders
@@ -48,46 +48,47 @@ def add_database(directory_path):
     except OSError as e:
         print(f"Failed to create directory '{directory_path}': {e}")
 
-def add_print():
+def add_print(new_file_name, new_content, folder):
 
     base_directory = "databases"
     folders = get_folders_in_directory(base_directory)
     
-    for i, subdirectory in enumerate(folders, 1):
-        print(f"{i}. {subdirectory}")
+    #for i, subdirectory in enumerate(folders, 1):
+        #print(f"{i}. {subdirectory}")
 
-    selected_folder_index = get_valid_input("Enter the number of the folder you want to edit: ", 1, len(folders))
-    selected_folder = os.path.join(base_directory, folders[selected_folder_index - 1])
-
-    new_file_name = input("Enter the name of the new print: ")
-    new_content = input("Enter the content for the new print (Press Enter if none):\n")
+    #selected_folder_index = get_valid_input("Enter the number of the folder you want to edit: ", 1, len(folders))
+    selected_folder = os.path.join(base_directory, folder)
+    #selected_folder = os.path.join(base_directory, folders)
+    #new_file_name = input("Enter the name of the new print: ")
+    #new_content = input("Enter the content for the new print (Press Enter if none):\n")
 
     new_file_path = os.path.join(selected_folder, new_file_name)
 
     with open(new_file_path, 'w') as new_file:
         new_file.write(new_content)
 
-    print(f"\nFile '{new_file_name}' has been added to '{selected_folder}'.")
-def edit_print():
+    #print(f"\nFile '{new_file_name}' has been added to '{selected_folder}'.")
+def edit_print(file_name, folder):
     
 
     base_directory = "databases"
     folders = get_folders_in_directory(base_directory)
 
-    print("Select a folder: ")
-    for i, folder in enumerate(folders, 1):
-        print(f"{i}, {folder}")
-    selected_folder_index = get_valid_input("Enter the number of the folder you want to edit: ", 1, len(folders))
-    selected_folder = os.path.join(base_directory, folders[selected_folder_index - 1])
+    #print("Select a folder: ")
+    #for i, folder in enumerate(folders, 1):
+        #print(f"{i}, {folder}")
+    #selected_folder_index = get_valid_input("Enter the number of the folder you want to edit: ", 1, len(folders))
+    selected_folder = os.path.join(base_directory, folder)
     
     files_in_selected_folder = get_files_in_folder(selected_folder)
 
-    print(f"\nFiles in '{selected_folder}':")
-    for i, file in enumerate(files_in_selected_folder, 1):
-        print(f"{i}. {file}")
+    #print(f"\nFiles in '{selected_folder}':")
+    #for i, file in enumerate(files_in_selected_folder, 1):
+        #print(f"{i}. {file}")
 
-    selected_file_index = get_valid_input("Enter the number of the print you want to edit: ", 1, len(files_in_selected_folder))
-    selected_file = os.path.join(selected_folder, files_in_selected_folder[selected_file_index - 1])
+    #selected_file_index = get_valid_input("Enter the number of the print you want to edit: ", 1, len(files_in_selected_folder))
+    #selected_file = os.path.join(selected_folder, files_in_selected_folder[selected_file_index - 1])
+    selected_file = os.path.join(selected_folder, files_in_selected_folder)
 
     with open(selected_file, 'r') as file:
         current_content = file.read()
