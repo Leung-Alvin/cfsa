@@ -6,7 +6,6 @@ import random
 import model
 import numpy as np
 import grammar
-import pyglet, os
 
 #function to be called when the button is clicked
 #def on_button_click():
@@ -129,8 +128,8 @@ def compare_two_prints(root_window):
     # Create the sub window
 
     cmp = tk.Toplevel(root_window)
-    cmp.title("Compare Two Prints")
 
+    cmp.title("Compare Two Prints")
     prompts = prompt.get_prompts()
     text_1 = np.random.choice(prompts, replace = False)
     text_2 = np.random.choice(prompts, replace = False)
@@ -178,6 +177,13 @@ def main():
         slant = "roman",
     )    
 
+    CyberFontSub = Font(
+        family = "helvetica",
+        size = 30,
+        weight = "bold",
+        slant = "roman",
+    )   
+
     CyberFontButton = Font(
         family = "Verdana",
         weight = "bold",
@@ -186,9 +192,14 @@ def main():
     frame.configure(bg="lightblue")
 
     #CFSA Title Widget
-    label = tk.Label(frame, text="CFSA Demo", font = CyberFont, bg="lightblue", pady=10)
+    label = tk.Label(frame, text="CFSA CyberSecurity Suite", font = CyberFont, bg="#D3D3D3", bd = 0, highlightthickness=5,  highlightbackground="grey", fg = "#000080")
+    #label.place(relx = .5, rely = .1, anchor = "center")
+    label.pack(padx= 100, pady= 100) 
     #label = tk.Label(frame, text="CFSA Demo", font = ('Starzoom-Shavian', 25), bg="lightblue", pady=10)
-    label.place(relx = .5, rely = .2, anchor = "center") 
+    
+    #Subtitle Widget
+    label = tk.Label(frame, text="Demo Version", font = CyberFontSub, bg="lightblue", pady=10)
+    label.place(relx = .5, rely = .27, anchor = "center") 
     # Button Creation
      
     db_compare_button = tk.Button(frame, 
