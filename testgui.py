@@ -96,39 +96,103 @@ def compare_with_database(root_window):
 def edit_database(root_window):
     base_directory = "databases"
 
-    def show_message(title, message, icon):
-        messagebox.showinfo(title, message, icon=icon)
+    def get_folders_in_directory(directory_path):
+        folders = [f for f in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, f))]
+        return folders
+    def get_files_in_folder(folder_path):
+        files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+        return files
+    
+    def display_file_content():
+        selected_folder = listbox.get(tk.ACTIVE)
+        selected_file = contents_listbox.get(tk.ACTIVE)
+        selected_file_path = os.path.join(base_directory, selected_folder, selected_file)
 
-    def get_print_input():
+        try:
+            with open(selected_file_path, 'r') as file:
+                current_content = file.read()
+
+            # Clear existing text in the Text widgets
+            #view_text_widget.delete(1.0, tk.END)
+            edit_text_widget.delete(1.0, tk.END)
+
+            # Display content in the view_text_widget
+            #view_text_widget.insert(tk.END, current_content)
+
+            # Enable the edit_text_widget for editing
+            edit_text_widget.config(state=tk.NORMAL)
+            edit_text_widget.delete(1.0, tk.END)
+            edit_text_widget.insert(tk.END, current_content)
+        except FileNotFoundError:
+            #view_text_widget.insert(tk.END, "File not found.")
+            edit_text_widget.insert(tk.END, "File not found.")
+
+    def display_folder_contents():
+        selected_item = listbox.get(tk.ACTIVE)
+        selected_directory = os.path.join(base_directory, selected_item)
+
+        contents_listbox.delete(0, tk.END)
+
+        try:
+
+            contents = os.listdir(selected_directory)
+            for item in contents:
+                    contents_listbox.insert(tk.END, item)
+        except FileNotFoundError:
+            contents_listbox.insert(tk.END, "Contents not available.")
+    
+    def save_changes():
+        selected_folder = listbox.get(tk.ACTIVE)
+        selected_file = contents_listbox.get(tk.ACTIVE)
+        selected_file_path = os.path.join(base_directory, selected_folder, selected_file)
+
+        try:
+            edited_content = edit_text_widget.get(1.0, tk.END)
+
+            with open(selected_file_path, 'w') as file:
+                file.write(edited_content)
+
+            # Disable the edit_text_widget after saving changes
+            edit_text_widget.config(state=tk.DISABLED)
+        except FileNotFoundError:
+            edit_text_widget.insert(tk.END, "File not found.")
+
+    def display_folders():
+
         folders = get_folders_in_directory(base_directory)
-
-        if not folders:
-            show_message("No Folders", "No subdirectories found in the base directory.", tk.messagebox.WARNING)
-            return
-
-        subdirectory_prompt = "Select a subdirectory to add a print:\n" + "\n".join([f"{i}. {subdirectory}" for i, subdirectory in enumerate(folders, 1)])
-        selected_subdirectory_index = get_valid_input(subdirectory_prompt, 1, len(folders))
-        selected_subdirectory = os.path.join(base_directory, folders[selected_subdirectory_index - 1])
-
-        new_file_name = simpledialog.askstring("Add Print", "Enter the name of the new print:")
-        new_content = simpledialog.askstring("Add Print", "Enter the content for the new print (Press Enter if none):")
-
-        if new_file_name is not None:
-            new_file_path = os.path.join(selected_subdirectory, new_file_name)
-
-        with open(new_file_path, 'w') as new_file:
-            new_file.write(new_content)
-
-        show_message("Operation Complete", f"File '{new_file_name}' added to '{selected_subdirectory}'.", tk.messagebox.INFO)
+        
+        listbox.delete(0, tk.END)  # Clear existing items
+    
+        for folder in folders:
+            listbox.insert(tk.END, folder)
 
     db = tk.Toplevel(root_window)
     db.title("Database")
     db.geometry("800x700")
 
-    add_print_button = tk.Button(db, text="Add Print", command=get_print_input)
-    add_print_button.grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
+    listbox = tk.Listbox(db, width=30)
+    listbox.grid(row = 1, column = 20, columnspan = 3, padx = 10, pady = 10)
+    
+    display_button = tk.Button(db, text="Display Folders", command=display_folders)
+    display_button.grid(row=2, column = 20, columnspan= 2, pady=10)
 
+    contents_listbox = tk.Listbox(db, width=30)
+    contents_listbox.grid(row=1, column=30, columnspan = 3, padx=10, pady=10)
 
+    view_contents_button = tk.Button(db, text="View Contents", command=display_folder_contents)
+    view_contents_button.grid(row=2, column = 30, columnspan= 2, pady=10)
+
+    #view_text_widget = tk.Text(db, height=10, width=40)
+    #view_text_widget.grid(row=4, column=20, columnspan=4, padx=10, pady=10)
+
+    edit_text_widget = tk.Text(db, height=20, width=50, state=tk.DISABLED)
+    edit_text_widget.grid(row=5, column=30, columnspan=4, pady=10)
+
+    save_button = tk.Button(db, text="Save Changes", command=save_changes)
+    save_button.grid(row=6, column=30, columnspan=2, pady=10)
+
+    display_text_files_button = tk.Button(db, text="Display Text Files", command=display_file_content)
+    display_text_files_button.grid(row=3, column=30, columnspan=2, pady=10)
 
 def compare_two_prints(root_window):
     result = False
