@@ -107,7 +107,28 @@ def edit_database(root_window):
         selected_folder = listbox.get(tk.ACTIVE)
         selected_file = contents_listbox.get(tk.ACTIVE)
         selected_file_path = os.path.join(base_directory, selected_folder, selected_file)
+        
+        edit_text_widget.delete(1.0, tk.END)
+        
+        encodings_to_try = ['utf-8', 'latin-1', 'utf-16', 'cp1252']
+        
+        for encoding in encodings_to_try:
+            try:
+                with open(selected_file_path, 'r', encoding=encoding) as file:
+                    current_content = file.read()
 
+                # Enable the edit_text_widget for editing
+                edit_text_widget.config(state=tk.NORMAL)
+                edit_text_widget.delete(1.0, tk.END)
+                edit_text_widget.insert(tk.END, current_content)
+
+                break  # Break out of the loop if successful
+            except UnicodeDecodeError:
+                pass  # Try the next encoding if decoding fails
+            except FileNotFoundError:
+                edit_text_widget.insert(tk.END, "File not found.")
+
+        '''
         try:
             with open(selected_file_path, 'r') as file:
                 current_content = file.read()
@@ -126,7 +147,7 @@ def edit_database(root_window):
         except FileNotFoundError:
             #view_text_widget.insert(tk.END, "File not found.")
             edit_text_widget.insert(tk.END, "File not found.")
-
+        '''
     def display_folder_contents():
         selected_item = listbox.get(tk.ACTIVE)
         selected_directory = os.path.join(base_directory, selected_item)
