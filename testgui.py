@@ -109,38 +109,40 @@ def edit_database(root_window):
 
         if not selected_folder:
             tk.messagebox.showinfo("Select File", "Please select a file.")
+            db.lift()
 
         selected_file = contents_listbox.get(tk.ACTIVE)
         selected_file_path = os.path.join(base_directory, selected_folder, selected_file)
         
         edit_text_widget.delete(1.0, tk.END)
 
-        encodings_to_try = ['utf-8', 'latin-1', 'utf-16', 'cp1252']
+        #encodings_to_try = ['utf-8', 'latin-1', 'utf-16', 'cp1252']
         
-        for encoding in encodings_to_try:
-            try:
-                with open(selected_file_path, 'r', encoding= 'utf-8') as file:
-                    current_content = file.read()
+        #for encoding in encodings_to_try:
+        try:
+            with open(selected_file_path, 'r', encoding= 'utf-8') as file:
+                current_content = file.read()
 
-                # Enable the edit_text_widget for editing
-                edit_text_widget.config(state=tk.NORMAL)
-                edit_text_widget.delete(1.0, tk.END)
-                edit_text_widget.insert(tk.END, current_content)
+            # Enable the edit_text_widget for editing
+            edit_text_widget.config(state=tk.NORMAL)
+            edit_text_widget.delete(1.0, tk.END)
+            edit_text_widget.insert(tk.END, current_content)
 
-                break  # Break out of the loop if successful
-            except UnicodeDecodeError:
-                pass  # Try the next encoding if decoding fails
-            except FileNotFoundError:
-                edit_text_widget.insert(tk.END, "File not found.")
+            #break  # Break out of the loop if successful
+        except UnicodeDecodeError:
+            pass  # Try the next encoding if decoding fails
+        except FileNotFoundError:
+            edit_text_widget.insert(tk.END, "File not found.")
     def display_folder_contents():
         selected_item = listbox.get(tk.ACTIVE)
 
         if not selected_item:
             tk.messagebox.showinfo("Select Folder", "Please select a folder.")
-    
+            db.lift()
+            listbox.get(tk.DISABLED)
+
         selected_directory = os.path.join(base_directory, selected_item)
 
-        edit_text_widget.delete(1.0, tk.END)
         contents_listbox.delete(0, tk.END)
 
         try:
@@ -191,13 +193,14 @@ def edit_database(root_window):
         selected_file = contents_listbox.get(tk.ACTIVE)
         if not selected_file:
             tk.messagebox.showinfo("Select File", "Please select a file.")
+            db.lift()
             return
+        db.focus_force()
 
         confirmation = tk.messagebox.askyesno("Delete File", f"Do you want to delete the file '{selected_file}'?")
         if confirmation:
             selected_folder = listbox.get(tk.ACTIVE)
             file_path = os.path.join(base_directory, selected_folder, selected_file)
-            print(file_path)
             try:
                 # Check if it's a directory before attempting to remove
                 if os.path.isfile(file_path):
@@ -229,19 +232,25 @@ def edit_database(root_window):
         folders = get_folders_in_directory(base_directory)
         
         listbox.delete(0, tk.END)  # Clear existing items
-    
+
         for folder in folders:
             listbox.insert(tk.END, folder)
 
     def bind_display_file_contents(event):
-        display_folder_contents()
-
+        edit_text_widget.delete(1.0, tk.END)
+    
+    def bind_display_folder_contents(event):
+        widget_under_cursor = event.widget.winfo_containing(event.x_root, event.y_root)
+        if widget_under_cursor != contents_listbox:
+            contents_listbox.delete(0, tk.END)
+            
     db = tk.Toplevel(root_window)
     db.title("Database")
     db.geometry("900x800")
 
     listbox = tk.Listbox(db, width=30)
     listbox.grid(row = 1, column = 20, columnspan = 3, padx = 10, pady = 10)
+    listbox.bind('<ButtonRelease-1>', bind_display_folder_contents)
 
     display_button = tk.Button(db, text="Display Folders", command=display_folders)
     display_button.grid(row=2, column = 20, columnspan= 2, pady=10)
@@ -264,7 +273,6 @@ def edit_database(root_window):
 
     save_button = tk.Button(db, text="Save Changes", command=save_changes)
     save_button.grid(row=6, column=30, columnspan=2, pady=10)
-
 
     display_text_files_button = tk.Button(db, text="Display Prints", command=display_file_content)
     display_text_files_button.grid(row=3, column=30, columnspan=2, pady=10)
