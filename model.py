@@ -5,7 +5,7 @@ import stylom as st
 
 def predicto(string, N):
     st.delete_train_test_dirs()
-    src = "survey"
+    src = "databases\\survey"
     # dest_1 = "tr"
     # dest_2 = "te"
     # tr_set,te_set= st.train_test_split(st.get_all_files(src),1)

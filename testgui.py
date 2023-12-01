@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkinter import simpledialog, messagebox
+from tkinter import simpledialog, filedialog, messagebox
 from tkinter.font import Font
+import shutil
 import prompt
 import random
 import model
@@ -99,22 +100,26 @@ def edit_database(root_window):
     def get_folders_in_directory(directory_path):
         folders = [f for f in os.listdir(directory_path) if os.path.isdir(os.path.join(directory_path, f))]
         return folders
-    def get_files_in_folder(folder_path):
-        files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
-        return files
+    #def get_files_in_folder(folder_path):
+        #files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+        #return files
     
     def display_file_content():
         selected_folder = listbox.get(tk.ACTIVE)
+
+        if not selected_folder:
+            tk.messagebox.showinfo("Select File", "Please select a file.")
+
         selected_file = contents_listbox.get(tk.ACTIVE)
         selected_file_path = os.path.join(base_directory, selected_folder, selected_file)
         
         edit_text_widget.delete(1.0, tk.END)
-        
+
         encodings_to_try = ['utf-8', 'latin-1', 'utf-16', 'cp1252']
         
         for encoding in encodings_to_try:
             try:
-                with open(selected_file_path, 'r', encoding=encoding) as file:
+                with open(selected_file_path, 'r', encoding= 'utf-8') as file:
                     current_content = file.read()
 
                 # Enable the edit_text_widget for editing
@@ -127,41 +132,82 @@ def edit_database(root_window):
                 pass  # Try the next encoding if decoding fails
             except FileNotFoundError:
                 edit_text_widget.insert(tk.END, "File not found.")
-
-        '''
-        try:
-            with open(selected_file_path, 'r') as file:
-                current_content = file.read()
-
-            # Clear existing text in the Text widgets
-            #view_text_widget.delete(1.0, tk.END)
-            edit_text_widget.delete(1.0, tk.END)
-
-            # Display content in the view_text_widget
-            #view_text_widget.insert(tk.END, current_content)
-
-            # Enable the edit_text_widget for editing
-            edit_text_widget.config(state=tk.NORMAL)
-            edit_text_widget.delete(1.0, tk.END)
-            edit_text_widget.insert(tk.END, current_content)
-        except FileNotFoundError:
-            #view_text_widget.insert(tk.END, "File not found.")
-            edit_text_widget.insert(tk.END, "File not found.")
-        '''
     def display_folder_contents():
         selected_item = listbox.get(tk.ACTIVE)
+
+        if not selected_item:
+            tk.messagebox.showinfo("Select Folder", "Please select a folder.")
+    
         selected_directory = os.path.join(base_directory, selected_item)
 
+        edit_text_widget.delete(1.0, tk.END)
         contents_listbox.delete(0, tk.END)
 
         try:
-
             contents = os.listdir(selected_directory)
             for item in contents:
                     contents_listbox.insert(tk.END, item)
         except FileNotFoundError:
             contents_listbox.insert(tk.END, "Contents not available.")
-    
+
+    def add_new_file():
+        selected_folder = listbox.get(tk.ACTIVE)
+
+        if not selected_folder:
+            tk.messagebox.showinfo("Select Folder", "Please select a folder.")
+            return
+
+        selected_directory = os.path.join(base_directory, selected_folder)
+
+        file_dialog_window = tk.Toplevel(db)
+        file_dialog_window.transient(db)
+        file_dialog_window.grab_set()
+
+        # Ask the user to select a text file using the file explorer
+        file_path = filedialog.askopenfilename(parent = file_dialog_window, title="Select a Text File", filetypes=[("Text files", "*.txt")])
+        
+        file_dialog_window.destroy()
+        
+        if file_path:
+            # Extract the file name from the selected path
+            new_file_name = os.path.basename(file_path)
+
+            # Construct the new file path in the selected directory
+            new_file_path = os.path.join(selected_directory, new_file_name)
+
+            try:
+                shutil.copy(file_path, new_file_path)
+
+                # Update the contents_listbox to include the new file
+                contents_listbox.insert(tk.END, new_file_name)
+
+                # Update the folder_listbox to display the current folders
+                contents_listbox.delete(0, tk.END)
+                display_folders()
+            except FileExistsError:
+                tk.messagebox.showinfo("File Exists", "File with that name already exists in the selected directory.")
+
+    def delete_selected_file():
+        selected_file = contents_listbox.get(tk.ACTIVE)
+        if not selected_file:
+            tk.messagebox.showinfo("Select File", "Please select a file.")
+            return
+
+        confirmation = tk.messagebox.askyesno("Delete File", f"Do you want to delete the file '{selected_file}'?")
+        if confirmation:
+            selected_folder = listbox.get(tk.ACTIVE)
+            file_path = os.path.join(base_directory, selected_folder, selected_file)
+            print(file_path)
+            try:
+                # Check if it's a directory before attempting to remove
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+                    # Update the listbox and clear the text widget
+                    display_folder_contents()
+                    edit_text_widget.delete(1.0, tk.END)
+            except OSError as e:
+                tk.messagebox.showerror("Error", f"Error deleting file: {e}")
+
     def save_changes():
         selected_folder = listbox.get(tk.ACTIVE)
         selected_file = contents_listbox.get(tk.ACTIVE)
@@ -170,7 +216,7 @@ def edit_database(root_window):
         try:
             edited_content = edit_text_widget.get(1.0, tk.END)
 
-            with open(selected_file_path, 'w') as file:
+            with open(selected_file_path, 'w', encoding = 'utf-8') as file:
                 file.write(edited_content)
 
             # Disable the edit_text_widget after saving changes
@@ -187,24 +233,31 @@ def edit_database(root_window):
         for folder in folders:
             listbox.insert(tk.END, folder)
 
+    def bind_display_file_contents(event):
+        display_folder_contents()
+
     db = tk.Toplevel(root_window)
     db.title("Database")
-    db.geometry("800x700")
+    db.geometry("900x800")
 
     listbox = tk.Listbox(db, width=30)
     listbox.grid(row = 1, column = 20, columnspan = 3, padx = 10, pady = 10)
-    
+
     display_button = tk.Button(db, text="Display Folders", command=display_folders)
     display_button.grid(row=2, column = 20, columnspan= 2, pady=10)
 
+    delete_folder_button = tk.Button(db, text="Delete Folder", command = delete_selected_file)
+    delete_folder_button.grid(row=2, column= 31, columnspan=2, pady=10)
+
+    add_file_button = tk.Button(db, text="Add New File", command=add_new_file)
+    add_file_button.grid(row=3, column= 20, columnspan=2, pady=10)
+
     contents_listbox = tk.Listbox(db, width=30)
     contents_listbox.grid(row=1, column=30, columnspan = 3, padx=10, pady=10)
+    contents_listbox.bind('<ButtonRelease-1>', bind_display_file_contents)
 
     view_contents_button = tk.Button(db, text="View Contents", command=display_folder_contents)
     view_contents_button.grid(row=2, column = 30, columnspan= 2, pady=10)
-
-    #view_text_widget = tk.Text(db, height=10, width=40)
-    #view_text_widget.grid(row=4, column=20, columnspan=4, padx=10, pady=10)
 
     edit_text_widget = tk.Text(db, height=20, width=50, state=tk.DISABLED)
     edit_text_widget.grid(row=5, column=30, columnspan=4, pady=10)
@@ -212,7 +265,8 @@ def edit_database(root_window):
     save_button = tk.Button(db, text="Save Changes", command=save_changes)
     save_button.grid(row=6, column=30, columnspan=2, pady=10)
 
-    display_text_files_button = tk.Button(db, text="Display Text Files", command=display_file_content)
+
+    display_text_files_button = tk.Button(db, text="Display Prints", command=display_file_content)
     display_text_files_button.grid(row=3, column=30, columnspan=2, pady=10)
 
 def compare_two_prints(root_window):
