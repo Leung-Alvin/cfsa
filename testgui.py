@@ -161,14 +161,9 @@ def edit_database(root_window):
 
         selected_directory = os.path.join(base_directory, selected_folder)
 
-        file_dialog_window = tk.Toplevel(db)
-        file_dialog_window.transient(db)
-        file_dialog_window.grab_set()
-
         # Ask the user to select a text file using the file explorer
-        file_path = filedialog.askopenfilename(parent = file_dialog_window, title="Select a Text File", filetypes=[("Text files", "*.txt")])
+        file_path = filedialog.askopenfilename(parent = db, title="Select a Text File", filetypes=[("Text files", "*.txt")])
         
-        file_dialog_window.destroy()
         
         if file_path:
             # Extract the file name from the selected path
