@@ -255,13 +255,13 @@ def edit_database(root_window):
     display_button = tk.Button(db, text="Display Folders", command=display_folders)
     display_button.grid(row=2, column = 20, columnspan= 2, pady=10)
 
-    delete_folder_button = tk.Button(db, text="Delete FingerPrint", command = delete_selected_file)
+    delete_folder_button = tk.Button(db, text="Delete Fingerprint", command = delete_selected_file)
     delete_folder_button.grid(row=2, column= 31, columnspan=2, pady=10)
 
     add_file_button = tk.Button(db, text="Add New File", command=add_new_file)
     add_file_button.grid(row=3, column= 20, columnspan=2, pady=10)
 
-    contents_listbox = tk.Listbox(db, width=30)
+    contents_listbox = tk.Listbox(db, width=40)
     contents_listbox.grid(row=1, column=30, columnspan = 3, padx=10, pady=10)
     contents_listbox.bind('<ButtonRelease-1>', bind_display_file_contents)
 
@@ -429,7 +429,7 @@ def main():
     view_prints_button.bind('<Leave>', lambda event, btn = view_prints_button: on_leave(btn))
 
     placeholder_button = tk.Button(frame, 
-                            text = "View FingerPrints",  
+                            text = "View Fingerprints",  
                             command = lambda: edit_database(frame), font = CyberFontButton, width = 35, height = 5)
     placeholder_button.place(relx = .35, rely = .6,  relheight=.1, relwidth=.25, anchor = "center")  
     # compare_two_prints_button.pack()
