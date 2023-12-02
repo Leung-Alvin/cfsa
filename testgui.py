@@ -73,18 +73,18 @@ def compare_with_database(root_window):
                     height = 50, 
                     width = 150) 
     
-    inputtxt.pack() 
+    inputtxt.place(relx=.05, rely = .20, relheight = .4, relwidth =.9) 
     
     # Button Creation 
     printButton = tk.Button(frame1, 
                             text = "Predict",  
                             command = printInput) 
-    printButton.pack()
+    printButton.place(relx = .375, rely = .7, relheight = .1, relwidth =.15)
     
     skipPromptButton = tk.Button(frame1, 
                             text = "Skip Prompt",  
                             command = skipPrompt) 
-    skipPromptButton.pack()  
+    skipPromptButton.place(relx = .375, rely = .825, relheight = .1, relwidth =.15)  
     
     # Label Creation 
     lbl = tk.Label(frame1, text = "") 
@@ -365,11 +365,12 @@ def main():
     frame = tk.Tk()
     frame.state('zoomed') 
     frame.title("CFSA Prototype")
+    frame.minsize(width=900, height=660)
     # frame.geometry('1600x1200')
     
     CyberFont = Font(
         family = "Verdana",
-        size = 42,
+        size = 37,
         weight = "bold",
         slant = "roman",
     )    
@@ -390,19 +391,19 @@ def main():
 
     #CFSA Title Widget
     label = tk.Label(frame, text="CFSA CyberSecurity Suite", font = CyberFont, bg="#D3D3D3", bd = 0, highlightthickness=5,  highlightbackground="grey", fg = "#000080")
-    #label.place(relx = .5, rely = .1, anchor = "center")
-    label.pack(padx= 100, pady= 100) 
+    label.place(relx = .5, rely = .1, relheight=.2, relwidth=.8, anchor = "center")
+    #label.pack(padx= 100, pady= 100) 
     #label = tk.Label(frame, text="CFSA Demo", font = ('Starzoom-Shavian', 25), bg="lightblue", pady=10)
     
     #Subtitle Widget
     label = tk.Label(frame, text="Demo Version", font = CyberFontSub, bg="lightblue", pady=10)
-    label.place(relx = .5, rely = .27, anchor = "center") 
+    label.place(relx = .5, rely = .27, relheight=.2, relwidth=.8, anchor = "center") 
     # Button Creation
      
     db_compare_button = tk.Button(frame, 
                             text = "Compare With Database",  
                             command = lambda: compare_with_database(frame), font = CyberFontButton, width = 35, height = 5)
-    db_compare_button.place(relx = .61, rely= .4, anchor = "center") 
+    db_compare_button.place(relx = .65, rely= .4, relheight=.1, relwidth=.25, anchor = "center") 
     # db_compare_button.pack()
     
     #button light up
@@ -412,7 +413,7 @@ def main():
     compare_two_prints_button = tk.Button(frame, 
                             text = "Compare Two Prints",  
                             command = lambda: compare_two_prints(frame), font = CyberFontButton, width = 35, height = 5)
-    compare_two_prints_button.place(relx = .37, rely = .4, anchor = "center")  
+    compare_two_prints_button.place(relx = .35, rely = .4, relheight=.1, relwidth=.25, anchor = "center")  
     # compare_two_prints_button.pack()
     
     compare_two_prints_button.bind('<Enter>', lambda event, btn = compare_two_prints_button: on_enter(btn))
@@ -421,7 +422,7 @@ def main():
     view_prints_button = tk.Button(frame, 
                             text = "View Fingerprints",  
                             command = lambda: compare_two_prints(frame), font = CyberFontButton, width = 35, height = 5)
-    view_prints_button.place(relx = .61, rely = .6, anchor = "center")  
+    view_prints_button.place(relx = .65, rely = .6,  relheight=.1, relwidth=.25, anchor = "center")  
     # compare_two_prints_button.pack()
     
     view_prints_button.bind('<Enter>', lambda event, btn = view_prints_button: on_enter(btn))
@@ -430,7 +431,7 @@ def main():
     placeholder_button = tk.Button(frame, 
                             text = "Database",  
                             command = lambda: edit_database(frame), font = CyberFontButton, width = 35, height = 5)
-    placeholder_button.place(relx = .37, rely = .6, anchor = "center")  
+    placeholder_button.place(relx = .35, rely = .6,  relheight=.1, relwidth=.25, anchor = "center")  
     # compare_two_prints_button.pack()
     
     placeholder_button.bind('<Enter>', lambda event, btn = placeholder_button: on_enter(btn))
@@ -442,7 +443,7 @@ def main():
     quit_button = tk.Button(frame, 
                             text = "Quit Application",  
                             command = quit, width = 30, font = CyberFontButton, height = 5, anchor = "center")
-    quit_button.place(relx = .5, rely = .8, anchor = "center") 
+    quit_button.place(relx = .5, rely = .9,  relheight=.1, relwidth=.2, anchor = "center") 
 
     quit_button.bind('<Enter>', lambda event, btn = quit_button: on_enter(btn))
     quit_button.bind('<Leave>', lambda event, btn = quit_button: on_leave(btn))
