@@ -3,6 +3,7 @@ import stylom as st
 # def clear_temp():
 #     open('survey/temp_-_mundanely.txt', 'w').close()
 
+
 def predicto(string, N):
     st.delete_train_test_dirs()
     src = "databases\\survey"
