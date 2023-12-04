@@ -1,4 +1,4 @@
-# Cybersecuirty Suite for Forensic Analysis
+# Cybersecurity Suite for Forensic Analysis
 UNR CS 425/426 Project
 
 ## Setting up the Virtual Environment on Linux
