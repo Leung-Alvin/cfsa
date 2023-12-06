@@ -427,7 +427,7 @@ def compare_two_prints(root_window):
     text_2 = np.random.choice(prompts, replace=False)
     # Create the first text box
     label1 = tk.Label(cmp, text=text_1)
-    label1.grid(row=0, column=0, padx=1, pady=10, sticky="w")
+    label1.grid(row=0, column=0, padx=100, pady=10, sticky="w")
 
     entry1 = tk.Text(cmp, height=20, width=100)
     entry1.grid(row=0, column=1, padx=10, pady=10)
