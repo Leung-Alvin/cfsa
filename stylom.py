@@ -65,7 +65,8 @@ def get_prints(authors, directory):
         prints[author] = merge_all_prints(author, directory)
     return prints
 
-
+#This prediction algorithm was sourced from https://programminghistorian.org/en/lessons/introduction-to-stylometry-with-python
+#All other functions were written by us.
 def predict(db, string, authors, N):
     author_tokens = {}
     for author in authors:
@@ -224,42 +225,6 @@ def measure(db, di, authors, N):
         ]
     return ret
 
-
-# count = 0
-# files = os.listdir(dest_2)
-# n_files = len(files)
-# for file in files:
-#     f = open("te/"+file, "r")
-#     text = f.read()
-#     actual_answer = file.split("_-_")[0]
-#     print(actual_answer, predict(dir_prints,text,dir_authors,70)[1])
-#     if(actual_answer==list(predict(dir_prints,text,dir_authors,70)[1].keys())[0]):
-#         count+=1
-# print(count/n_files)
-
-
-# def evaluate(df):
-#     num_rows = df.shape[0]
-#     count = 0
-#     for index, row in df.iterrows():
-#         true_ans = row['actual_author']
-#         pred_1 = row['prediction_1']
-#         pred_2 = row['prediction_2']
-#         if row['delta_1']==row['delta_2'] and (true_ans == pred_1 or true_ans == pred_2):
-#             count+=1
-#     return count/num_rows
-
-
-# def evaluate(df):
-#     num_rows = df.shape[0]
-#     count = 0
-#     for index, row in df.iterrows():
-#         true_ans = row['actual_author']
-#         pred_1 = row['prediction_1']
-#         pred_2 = row['prediction_2']
-#         if true_ans == pred_1:
-#             count+=1
-#     return count/num_rows
 
 
 def evaluate(df):
